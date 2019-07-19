@@ -6,3 +6,5 @@ ECG Clasify berisi kode program untuk melakukan analisis data ecg yang bertujuan
 ECG Storage berisi kode program REST API yang digunakan untuk mengambil data hasil analisis yang tersimpan di database mongodb
 
 ECG Web merupakan website yang bertujuan untuk menampilkan daftar pasien, malakukan request ke ECG clasify untuk melakukan anlysis data, dan melakukan request hasil analisi ke REST API kemudian ditampilkan ke website
+
+Didalam 3 folder tersebut terdapat folder docker yang berisi Dockerfile dan requirements yang dapat digunakan untuk membuat docker image 
