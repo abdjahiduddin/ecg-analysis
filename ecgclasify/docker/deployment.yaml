@@ -1,0 +1,19 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: clasify
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: clasify
+    spec:
+      containers:
+        - name: clasify
+          image: clasify:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          command: ["sh", "-c", "tail -f /dev/null"]

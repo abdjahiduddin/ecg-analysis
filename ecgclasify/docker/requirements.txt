@@ -1,0 +1,13 @@
+tensorflow==1.13.1
+keras
+flask
+pillow
+h5py
+gevent
+numpy
+opencv-python
+pandas
+biosppy
+matplotlib
+pymongo
+requests

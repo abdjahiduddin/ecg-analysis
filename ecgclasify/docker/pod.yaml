@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: clasify
+spec:
+  containers:
+    - name: clasify
+      image: clasify:v1
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 5000
+      command: [ "/bin/bash", "-c", "--" ]
+      args: [ "while true; do sleep 30; done;" ]
