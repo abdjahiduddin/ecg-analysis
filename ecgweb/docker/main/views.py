@@ -16,8 +16,8 @@ from .ecglib import ecg
 
 
 def homepage(response):
-    urlStorage = "http://10.103.119.178:5001/getAllName"
-    urlAnalytic = "http://10.107.111.238:5000/"
+    urlStorage = "http://10.103.99.193:5001/getAllName"
+    urlAnalytic = "http://10.103.99.194:5000/"
     responAnalytic = requests.request("GET", urlAnalytic)
     responAnalytic = responAnalytic.json()
     if responAnalytic['status'] == "OK":
@@ -30,7 +30,7 @@ def homepage(response):
         return render(response,"main/404.html")
 
 def analytic(response, username):
-    urlAnalytic = "http://10.107.111.238:5000/requestAnalysis/{}".format(username)
+    urlAnalytic = "http://10.103.99.194:5000/requestAnalysis/{}".format(username)
     responAnalytic = requests.request("GET", urlAnalytic)
     responAnalytic = responAnalytic.json()
     if responAnalytic['status'] == "OK":
@@ -42,7 +42,7 @@ def analytic(response, username):
 
 def getImage(username):
     args = {}
-    url = "http://10.103.119.178:5001/getOneData/{}".format(username)
+    url = "http://10.103.99.193:5001/getOneData/{}".format(username)
     respon = requests.request("GET", url)
     result = respon.json()
     data = result['result']['data']
