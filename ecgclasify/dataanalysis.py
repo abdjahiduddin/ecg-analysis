@@ -10,6 +10,9 @@ import matplotlib.pyplot as plt
 #pymongo
 import pymongo
 
+#http client
+import http.client
+
 #Library for get data from cloud
 import json
 import requests
@@ -36,6 +39,10 @@ output = []
 #Make Connection to Mongodb
 client = pymongo.MongoClient("mongodb://0.0.0.0:27017/")
 db = client["testing"]
+
+#Server
+ip_server = "127.0.0.1"
+port_server = 5001
 
 def model_predict(uploaded_files, model):
     
@@ -218,36 +225,56 @@ def checkInStorage(names,collection):
 def insertNama(names):
     msg = "OK"
     try:
-        col = db["pasien"]
+        conn = http.client.HTTPConnection(ip_server, port=port_server)
+        header = {"Content-Type" : "application/json"}
+
         name = names['nama']
         umur = names['umur']
         umur = umur.item()
-        col.insert_one({'nama':name,'umur':umur}) 
+        payload = {
+            "nama" : name,
+            "umur" : umur
+        }
+
+        json_data = json.dumps(payload)
+        conn.request("POST", "/insertNama", json_data, header)
+        respon = conn.getresponse().read()
+        msg = respon.decode('ascii')
     except:
-        msg = "ERROR, INSERT NAME"
+        msg = "ERROR, INSERT NAME, Analytic"
     return msg
     
 
 def insertData(data,name,len):
     msg = "OK"
     try:
-        col = db["data"]
-        iot = {
+        conn = http.client.HTTPConnection(ip_server, port=port_server)
+        header = {"Content-Type" : "application/json"}
+
+        data = {
             "nama":name,
             "data":data,
             "len":len
         }
+                
+        payload = {
+            'data' : data
+        }
         
-        col.insert_one(iot)
+        json_data = json.dumps(payload)
+        conn.request("POST", "/insertData", json_data, header)
+        respon = conn.getresponse().read()
+        msg = respon.decode('ascii')
     except:
-        msg = "ERROR, INSERT DATA"
+        msg = "ERROR, INSERT DATA, Analytic"
     return msg
     
 
 def insertHasil(pred,nama):
     msg = "OK"
-    col = db["hasil"]
     try:
+        conn = http.client.HTTPConnection(ip_server, port=port_server)
+        header = {"Content-Type" : "application/json"}
         hasil = {
                 "nama": nama,
                 "hasil": {
@@ -260,9 +287,19 @@ def insertHasil(pred,nama):
                     'VEB': pred["VEB"]
                 }
             }
-        col.insert_one(hasil)
+
+        payload = {
+            'hasil' : hasil
+        }
+        
+        json_data = json.dumps(payload)
+        
+        conn.request("POST", "/insertHasil", json_data, header)
+        
+        respon = conn.getresponse().read()
+        msg = respon.decode('ascii')
     except:
-        msg = "ERROR, INSERT HASIL"
+        msg = "ERROR, INSERT HASIL, ANALYTIC"
     return msg
 
 @app.route('/requestAnalysis/<string:nama>', methods=['GET'])
@@ -276,6 +313,7 @@ def requestAnalysis(nama):
                 name, data = preprocessing(nama)
                 pred = model_predict(data, model)
                 msg = insertHasil(pred,nama)
+                print(msg)
                 print("Clasify Done...")
         else:
             respon = msg
@@ -300,8 +338,10 @@ def showHome():
                 if i["status"] == False:
                     print("Saving Pasien Name To Storage")
                     msg = insertNama(names[counter])
+                    print(msg)
                     print("Saving Pasien Data To Storage")
                     msg = insertData(datas[counter],names[counter]['nama'],names[counter]['len'])
+                    print(msg)
                     print("--------------------------------------------------------------------")
         else:
             respon = msg

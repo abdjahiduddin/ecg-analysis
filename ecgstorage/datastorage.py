@@ -2,7 +2,7 @@ import json
 import pymongo
 
 # Flask utils
-from flask import Flask,  jsonify
+from flask import Flask,  jsonify, request
 from gevent.pywsgi import WSGIServer
 
 app = Flask("ECG Arrhytmia Storage")
@@ -77,6 +77,40 @@ def getOnePasienData(name):
 
     payload = jsonify(tmp)
     return payload
+
+@app.route('/insertNama', methods=['POST'])
+def insert_nama():
+    col = db["pasien"]
+    msg = "OK"
+    try:
+        name = request.json['nama']
+        umur = request.json['umur']
+        col.insert_one({'nama':name,'umur':umur}) 
+    except:
+        msg = "ERROR, INSERT HASIL, DB-API"
+    return msg
+
+@app.route('/insertData', methods=['POST'])
+def insert_data():
+    col = db["data"]
+    msg = "OK"
+    try:
+        data = request.json['data']
+        col.insert_one(data)
+    except:
+        msg = "ERROR, INSERT HASIL, DB-API"
+    return msg
+
+@app.route('/insertHasil', methods=['POST'])
+def insert_hasil():
+    col = db["hasil"]
+    msg = "OK"
+    try:
+        hasil = request.json['hasil']
+        col.insert(hasil)
+    except:
+        msg = "ERROR, INSERT HASIL, DB-API"
+    return msg
 
 if __name__ == '__main__':
     # app.run(port=5000, debug=True)
