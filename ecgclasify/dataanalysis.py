@@ -26,6 +26,9 @@ from keras.preprocessing import image
 from flask import Flask ,jsonify
 from gevent.pywsgi import WSGIServer
 
+# Costum Library
+from ecglib import ecg
+
 
 app = Flask("ECG Arrhytmia Classification")
 
@@ -38,7 +41,7 @@ output = []
 
 #Make Connection to Mongodb
 client = pymongo.MongoClient("mongodb://0.0.0.0:27017/")
-db = client["testing"]
+db = client["arrhytmia"]
 
 #Server
 ip_server = "127.0.0.1"
@@ -58,7 +61,7 @@ def model_predict(uploaded_files, model):
     indices = []
     signals = []
     count = 1
-    peaks =  biosppy.signals.ecg.christov_segmenter(signal=data, sampling_rate = 200.)[0]
+    peaks =  biosppy.signals.ecg.christov_segmenter(signal=data, sampling_rate = 360.)[0]
     for i in (peaks[1:-1]):
         diff1 = abs(peaks[count - 1] - i)
         diff2 = abs(peaks[count + 1]- i)
@@ -100,8 +103,9 @@ def model_predict(uploaded_files, model):
             RBB.append(indices[count]) 
         elif pred_class == 6:
             VEB.append(indices[count])
-
-    os.remove('fig.png')      
+    if os.path.isfile('fig.png'):
+        os.remove('fig.png')  
+    print(result)    
     return result
 
 
@@ -109,7 +113,7 @@ def getAllData():
     #GET ALL RECORD FROM CLOUD
     urlLen = "http://api.iotapps.belajardisini.com/topic/dataecg/limit/1000000000"
     headers = {
-        'Authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hcGkuaW90YXBwcy5iZWxhamFyZGlzaW5pLmNvbVwvdXNlclwvbG9naW4iLCJpYXQiOjE1NTU5NDQ2NTksIm5iZiI6MTU1NTk0NDY1OSwianRpIjoiOHZoWUtxdlh5WDh6R21sTCIsInN1YiI6IjVjYmQ4ZmY3YWRiMDY0M2NlMDc5ZTQ2NCIsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEiLCJkZXZpY2UiOiI1Y2JkOTQ1MWFkYjA2NDNjZTE2ZGEzOTIifQ.NRkT8UAEWzSk2ZfkFZAySqF7QsfCss5dH_Fh3vUBH94"
+        'Authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hcGkuaW90YXBwcy5iZWxhamFyZGlzaW5pLmNvbVwvdXNlclwvbG9naW4iLCJpYXQiOjE1NjU0MzY4MjIsIm5iZiI6MTU2NTQzNjgyMiwianRpIjoicXdKZVJBZng3eVdwVE8wUCIsInN1YiI6IjVjYmQ4ZmY3YWRiMDY0M2NlMDc5ZTQ2NCIsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEiLCJkZXZpY2UiOiI1Y2JkOTQ1MWFkYjA2NDNjZTE2ZGEzOTIifQ.7cb9tYxgfe2_LhC1zm_mkyPMnv5g-qk44r81k6rjn3M"
     }
 
     responseLen = requests.request("GET", urlLen, data={}, headers=headers)
@@ -159,10 +163,11 @@ def splitData(df,lenData):
 
 
 def preprocessing(state):
+    
     names = ""
     datas = ""
     allData = getAllData()
-
+    
     #convert data cloud to pandas dataframe
     df = pd.DataFrame(allData)
 
@@ -221,6 +226,19 @@ def checkInStorage(names,collection):
         msg = "ERROR, CHECK DATA IN STORAGE"
     return msg,namesStatus
 
+def getTimeseries(signal, sampling_rate=360.):
+    # ensure numpy
+    signal = np.array(signal)
+    sampling_rate = float(sampling_rate)
+
+    length = len(signal)
+    T = (length - 1) / sampling_rate
+    ts = np.linspace(0, T, length, endpoint=False)
+    ts = ts.tolist()
+    return ts
+
+def getSummary(signal, sampling_rate=360.):
+    pass
 
 def insertNama(names):
     msg = "OK"
@@ -251,16 +269,20 @@ def insertData(data,name,len):
         conn = http.client.HTTPConnection(ip_server, port=port_server)
         header = {"Content-Type" : "application/json"}
 
+        ts = getTimeseries(data)
+        filtered = ecg.getFiltered(data,360.)
+
         data = {
             "nama":name,
             "data":data,
-            "len":len
+            "timeseries":ts,
+            "filtered": filtered
         }
-                
+                    
         payload = {
             'data' : data
         }
-        
+            
         json_data = json.dumps(payload)
         conn.request("POST", "/insertData", json_data, header)
         respon = conn.getresponse().read()
@@ -270,11 +292,13 @@ def insertData(data,name,len):
     return msg
     
 
-def insertHasil(pred,nama):
+def insertHasil(pred,nama,data):
     msg = "OK"
     try:
         conn = http.client.HTTPConnection(ip_server, port=port_server)
         header = {"Content-Type" : "application/json"}
+        rpeaks, heart_rate,hr_template = ecg.getSummary(data,360.)
+
         hasil = {
                 "nama": nama,
                 "hasil": {
@@ -285,7 +309,11 @@ def insertHasil(pred,nama):
                     'PVC': pred["PVC"], 
                     'RBB': pred["RBB"], 
                     'VEB': pred["VEB"]
-                }
+                },
+                "rpeaks": rpeaks,
+                "heart_rate": heart_rate,
+                "hr_template": hr_template
+
             }
 
         payload = {
@@ -311,14 +339,15 @@ def requestAnalysis(nama):
             if status[0]["status"] == False:
                 print("Starting Clasify.....")
                 name, data = preprocessing(nama)
+                print(name)
                 pred = model_predict(data, model)
-                msg = insertHasil(pred,nama)
-                print(msg)
+                msg = insertHasil(pred,nama,data)
                 print("Clasify Done...")
         else:
             respon = msg
     except:
         respon = "ERROR Request Analysis"
+
     respon = {
         'status': respon
     }
@@ -332,7 +361,6 @@ def showHome():
     try:
         names, datas = preprocessing("home")
         msg, status = checkInStorage(names,"pasien")
-        print(msg)
         if msg == "OK":
             for counter,i in enumerate(status):
                 if i["status"] == False:
@@ -351,6 +379,7 @@ def showHome():
         'status': respon
     }
     respon = jsonify(respon)
+    
     return respon
 
 if __name__ == '__main__':

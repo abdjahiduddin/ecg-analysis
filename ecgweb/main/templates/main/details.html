@@ -22,6 +22,7 @@
   <!-- Custom styles for this template-->
   <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
   <link href="{% static '' %}vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <script src="{% static 'js/apexcharts.js' %}"></script>
 
 </head>
 
@@ -71,8 +72,8 @@
 
             <!-- Nav Item - Home -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="http://127.0.0.1:8000/" id="home" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="http://127.0.0.1:8000/" id="home" role="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="d-none d-lg-inline text-gray-800 small">Home</span>
               </a>
             </li>
@@ -113,7 +114,7 @@
             <h1 class="h4 mb-0 text-gray-800">Dashboard</h1>
           </div> -->
           <div class="row">
-            <div class="col-xl-4 col-lg-5">
+            <div class="col-xl-5 col-lg-6">
 
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -122,22 +123,20 @@
                 <div class="card-body">
                   <p><strong>Name</strong> : {{ nama }}</p>
                   <p><strong>Age</strong>: {{ umur }}</p>
-                  <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                      class="fas fa-eye fa-sm text-white-50"></i> Show Raw Data</a>
+                  <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                      class="fas fa-eye fa-sm text-white-50"></i> Show Raw Data</a> -->
                 </div>
               </div>
             </div>
-            <div class="col-xl-8 col-lg-7">
+            <div class="col-xl-7 col-lg-6">
               <div class="card shadow mb-4">
-                <a href="#pasienData" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                  aria-expanded="true" aria-controls="pasienData">
-                  <h6 class="m-0 font-weight-bold text-primary">ECG Summary</h6>
+                <a href="#hr" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true"
+                  aria-controls="hr">
+                  <h6 class="m-0 font-weight-bold text-primary">Heart Rate</h6>
                 </a>
-                <div class="collapse show" id="pasienData">
+                <div class="collapse show" id="hr">
                   <div class="card-body">
-                    <div class="text-center">
-                      <img class="img-fluid" width="650" height="400" src="data:image/png;base64,{{ summary }}" alt="">
-                    </div>
+                    <div id="chartHr"></div>
                   </div>
                 </div>
               </div>
@@ -145,139 +144,56 @@
           </div>
 
           <div class="row">
-            <div class="col-xl-6 col-lg-6">
+            <div class="col-xl-4 col-lg-4">
               <div class="card shadow mb-4">
-                <a href="#pvc" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                  aria-expanded="true" aria-controls="pvc">
-                  <h6 class="m-0 font-weight-bold text-primary">Premature Ventricular Contraction Beat (PVC)</h6>
+                <a href="#hr_template" class="d-block card-header py-3" data-toggle="collapse" role="button"
+                  aria-expanded="true" aria-controls="hr_template">
+                  <h6 class="m-0 font-weight-bold text-primary">Heart Rate Templates</h6>
                 </a>
-                <div class="collapse show" id="pvc">
+                <div class="collapse show" id="hr_template">
                   <div class="card-body">
-                    <div class="text-center">
-                      {% for x,y,z in PVC %}
-                      <strong>Data Range :</strong> [ {{ x }} , {{ y }} ]
-                      <img class="img-fluid" width="450" height="300" src="data:image/png;base64,{{ z }}" alt="">
-                      <div class="dropdown-divider"></div>
-                      {% empty %}
-                      <Strong>No Indications of Arrhytmia</Strong>
-                      {% endfor %}
-                    </div>
+                    <div id="chartTemplate"></div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-xl-6 col-lg-6">
+            <div class="col-xl-8 col-lg-8">
               <div class="card shadow mb-4">
-                <a href="#pab" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                  aria-expanded="true" aria-controls="pab">
-                  <h6 class="m-0 font-weight-bold text-primary">Paced Beat (PAB)</h6>
+                <a href="#raw" class="d-block card-header py-3" data-toggle="collapse" role="button"
+                  aria-expanded="true" aria-controls="raw">
+                  <h6 class="m-0 font-weight-bold text-primary">Raw Signals</h6>
                 </a>
-                <div class="collapse show" id="pab">
+                <div class="collapse show" id="raw">
                   <div class="card-body">
-                    <div class="text-center">
-                      {% for x,y,z in PAB %}
-                      <strong>Data Range :</strong> [ {{ x }} , {{ y }} ]
-                      <img class="img-fluid" width="450" height="300" src="data:image/png;base64,{{ z }}" alt="">
-                      <div class="dropdown-divider"></div>
-                      {% empty %}
-                      <Strong>No Indications of Arrhytmia</Strong>
-                      {% endfor %}
-                    </div>
+                    <div id="raw"></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <div class="row">
-            <div class="col-xl-6 col-lg-6">
-              <div class="card shadow mb-4">
-                <a href="#rbb" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                  aria-expanded="true" aria-controls="rbb">
-                  <h6 class="m-0 font-weight-bold text-primary">Right Bundle Branch Block beat (RBB)</h6>
-                </a>
-                <div class="collapse show" id="rbb">
-                  <div class="card-body">
-                    <div class="text-center">
-                    {% for x,y,z in RBB %}
-                    <strong>Data Range :</strong> [ {{ x }} , {{ y }} ]
-                    <img class="img-fluid" width="450" height="300" src="data:image/png;base64,{{ z }}" alt="">
-                    <div class="dropdown-divider"></div>
-                    {% empty %}
-                    <Strong>No Indications of Arrhytmia</Strong>
-                    {% endfor %}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-6 col-lg-6">
-              <div class="card shadow mb-4">
-                <a href="#lbb" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                  aria-expanded="true" aria-controls="lbb">
-                  <h6 class="m-0 font-weight-bold text-primary">Left Bundle Branch Block Beat (LBB)</h6>
-                </a>
-                <div class="collapse show" id="lbb">
-                  <div class="card-body">
-                    <div class="text-center">
-                    {% for x,y,z in LBB %}
-                    <strong>Data Range :</strong> [ {{ x }} , {{ y }} ]
-                    <img class="img-fluid" width="450" height="300" src="data:image/png;base64,{{ z }}" alt="">
-                    <div class="dropdown-divider"></div>
-                    {% empty %}
-                    <Strong>No Indications of Arrhytmia</Strong>
-                    {% endfor %}
-                    </div>
-                  </div>
+          <div>
+            <div class="card shadow mb-4">
+              <a href="#rpeaks" class="d-block card-header py-3" data-toggle="collapse" role="button"
+                aria-expanded="true" aria-controls="rpeaks">
+                <h6 class="m-0 font-weight-bold text-primary">R Peaks Detections</h6>
+              </a>
+              <div class="collapse show" id="rpeaks">
+                <div class="card-body">
+                  <div id="rpeaks"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-xl-6 col-lg-6">
-              <div class="card shadow mb-4">
-                <div>
-                  <a href="#apc" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                    aria-expanded="true" aria-controls="apc">
-                    <h6 class="m-0 font-weight-bold text-primary">Atrial Premature Contraction Beat (APC)</h6>
-                  </a>
-
-                </div>
-
-                <div class="collapse show" id="apc">
-                  <div class="card-body">
-                    <div class="text-center">
-                    {% for x,y,z in APC %}
-                    <strong>Data Range :</strong> [ {{ x }} , {{ y }} ]
-                    <img class="img-fluid" width="450" height="300" src="data:image/png;base64,{{ z }}" alt="">
-                    <div class="dropdown-divider"></div>
-                    {% empty %}
-                    <Strong>No Indications of Arrhytmia</Strong>
-                    {% endfor %}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-6 col-lg-6">
-              <div class="card shadow mb-4">
-                <a href="#veb" class="d-block card-header py-3" data-toggle="collapse" role="button"
-                  aria-expanded="true" aria-controls="ven">
-                  <h6 class="m-0 font-weight-bold text-primary">Ventricular Escape Beat (VEB)</h6>
-                </a>
-                <div class="collapse show" id="veb">
-                  <div class="card-body">
-                    <div class="text-center">
-                    {% for x,y,z in VEB %}
-                    <strong>Data Range :</strong> [ {{ x }} , {{ y }} ]
-                    <img class="img-fluid" width="450" height="300" src="data:image/png;base64,{{ z }}" alt="">
-                    <div class="dropdown-divider"></div>
-                    {% empty %}
-                    <Strong>No Indications of Arrhytmia</Strong>
-                    {% endfor %}
-                    </div>
-                  </div>
+          <div>
+            <div class="card shadow mb-4">
+              <a href="#arrhytmia" class="d-block card-header py-3" data-toggle="collapse" role="button"
+                aria-expanded="true" aria-controls="arrhytmia">
+                <h6 class="m-0 font-weight-bold text-primary">Arrhytmia Detections</h6>
+              </a>
+              <div class="collapse show" id="arrhytmia">
+                <div class="card-body">
+                  <div id="arrhytmia"></div>
                 </div>
               </div>
             </div>
@@ -330,6 +246,416 @@
     </div>
   </div>
 
+  <script>
+    // ECG Raw Signals
+    var data = {{ data }};
+
+    // ECG Filtered Signal
+    var filtered = {{ filtered }};
+
+    // Rpeaks Locations
+    var rpeaks = {{ rpeaks }};
+    var rpeaksMark = [];
+    rpeaks.forEach(function (item) {
+      rpeaksMark.push({
+        x: item,
+        strokeDashArray: 0,
+        borderColor: "#775DD0",
+        label: {
+          borderColor: "#775DD0",
+          style: {
+            color: "#fff",
+            background: "#775DD0"
+          },
+          orientation: "horizontal",
+          text: "R Peak"
+        }
+      })
+    });
+
+    // Heart Rate
+    var heart_rate = {{ hr }};
+
+    // Heart Rate Template
+    var template = {{ hr_template }};
+
+    var hr_template = [];
+    template.forEach(function (items, i) {
+      hr_template.push({
+        type: 'line',
+        name: 'QRS - ' + (i + 1),
+        data: items
+      });
+    });
+
+    // Arrhytmia Results
+    var hasil = {{ hasil| safe }};
+
+    var arrhytmia = [];
+    for (let key in hasil) {
+      if (hasil[key].length > 0) {
+        tmp = hasil[key];
+        for (let elem in tmp) {
+          arrhytmia.push({
+            x: tmp[elem][0],
+            x2: tmp[elem][1],
+            strokeDashArray: 0,
+            borderColor: "#FF4560",
+            label: {
+              borderColor: "#FF4560",
+              style: {
+                color: "#fff",
+                background: "#FF4560"
+              },
+              offsetX: 17,
+              offsetY: 16,
+              orientation: 'horizontal',
+              text: key
+            }
+          })
+        }
+      }
+    }
+
+    var optionsRaw = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        zoom: {
+          type: 'x',
+          enabled: true
+        },
+        toolbar: {
+          autoSelected: 'zoom'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      series: [{
+        data: data
+      }],
+      markers: {
+        size: 0,
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100]
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Amplitude'
+        },
+      },
+      xaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Timeseries (s)'
+        },
+      },
+      tooltip: {
+        shared: false,
+        y: {
+          formatter: function (val) {
+            return val
+          }
+        }
+      }
+    }
+
+    var chartRaw = new ApexCharts(
+      document.querySelector("#raw"),
+      optionsRaw
+    );
+
+    chartRaw.render();
+
+    var optionsRpeaks = {
+      annotations: {
+        xaxis: rpeaksMark
+      },
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        zoom: {
+          type: 'x',
+          enabled: true
+        },
+        toolbar: {
+          autoSelected: 'zoom'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      series: [{
+        data: filtered
+      }],
+      markers: {
+        size: 0,
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100]
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Amplitude'
+        },
+      },
+      xaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Timeseries (s)'
+        },
+      },
+
+      tooltip: {
+        shared: false,
+        y: {
+          formatter: function (val) {
+            return val
+          }
+        }
+      }
+    }
+
+    var chartRpeaks = new ApexCharts(
+      document.querySelector("#rpeaks"),
+      optionsRpeaks
+    );
+
+    chartRpeaks.render();
+
+    var optionsHr = {
+      chart: {
+        type: 'line',
+        stacked: false,
+        height: 360,
+        width: '100%',
+        zoom: {
+          type: 'x',
+          enabled: true
+        },
+        toolbar: {
+          autoSelected: 'zoom'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      series: [{
+        data: heart_rate
+      }],
+      markers: {
+        size: 0,
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Heart Rate (bpm)'
+        },
+      },
+      xaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Time (s)'
+        },
+      },
+      tooltip: {
+        shared: false,
+        y: {
+          formatter: function (val) {
+            return val
+          }
+        }
+      }
+
+    }
+
+    var chartHr = new ApexCharts(
+      document.querySelector("#chartHr"),
+      optionsHr
+    );
+
+    chartHr.render();
+
+    var optionsTemplate = {
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        zoom: {
+          type: 'x',
+          enabled: true
+        },
+        toolbar: {
+          autoSelected: 'zoom'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      series: hr_template,
+      markers: {
+        size: 0,
+      },
+      fill: {
+        type: 'solid',
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Amplitude'
+        },
+      },
+      xaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Timeseries (s)'
+        },
+      },
+
+      tooltip: {
+        shared: false,
+        y: {
+          formatter: function (val) {
+            return val
+          }
+        }
+      }
+    }
+
+    var chartTemplate = new ApexCharts(
+      document.querySelector("#chartTemplate"),
+      optionsTemplate
+    );
+
+    chartTemplate.render();
+
+    var optionsArrhytmia = {
+      annotations: {
+        xaxis: arrhytmia
+      },
+      chart: {
+        type: 'area',
+        stacked: false,
+        height: 350,
+        zoom: {
+          type: 'x',
+          enabled: true
+        },
+        toolbar: {
+          autoSelected: 'zoom'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      series: [{
+        data: filtered
+      }],
+      markers: {
+        size: 0,
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          inverseColors: false,
+          opacityFrom: 0.5,
+          opacityTo: 0,
+          stops: [0, 90, 100]
+        },
+      },
+      yaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Amplitude'
+        },
+      },
+      xaxis: {
+        labels: {
+          formatter: function (val) {
+            return val.toFixed(2);
+          },
+        },
+        title: {
+          text: 'Timeseries (s)'
+        },
+      },
+
+      tooltip: {
+        shared: false,
+        y: {
+          formatter: function (val) {
+            return val
+          }
+        }
+      }
+    }
+
+    var chartArrhytmia = new ApexCharts(
+      document.querySelector("#arrhytmia"),
+      optionsArrhytmia
+    );
+
+    chartArrhytmia.render();
+
+
+  </script>
   <!-- Bootstrap core JavaScript-->
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>

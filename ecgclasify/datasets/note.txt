@@ -1,5 +1,0 @@
-John = iapc.csv
-Doe = iapc2.csv
-Bryce = ilbb.csv
-Alex = ipab.csv
-Hanna = ipvc.csv

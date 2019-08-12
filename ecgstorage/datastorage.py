@@ -1,5 +1,6 @@
 import json
 import pymongo
+import numpy as np
 
 # Flask utils
 from flask import Flask,  jsonify, request
@@ -8,7 +9,7 @@ from gevent.pywsgi import WSGIServer
 app = Flask("ECG Arrhytmia Storage")
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client["testing"]
+db = client["arrhytmia"]
 
 @app.route('/getAllName', methods=['GET'])
 def getAllPasienName():
@@ -60,18 +61,73 @@ def getOnePasienData(name):
 
         nama = name
         umur = pasien["umur"]
-        lenData = data["len"]
         ecg = data["data"]
-        hasil = hasil["hasil"] 
+        ts = data["timeseries"]
+        ecg_ts = []
+        # ts + ecg
+        for count,i in enumerate(ecg):
+            ecg_ts.append([ts[count],i])
+
+        filtered = data["filtered"]
+        filtered_ts = []
+        # ts + filtered
+        for count,i in enumerate(filtered):
+            filtered_ts.append([ts[count],i])
+
+        # hasil
+        result = hasil["hasil"]
+        PVC = []
+        PAB = []
+        RBB = []
+        LBB = []
+        APC = []
+        VEB = []
+        for key in result.keys():
+            if len(result[key]) > 0 :
+                tmp = result[key]
+                for x in tmp:
+                    if key == "PVC":
+                        PVC.append([ts[x[0]],ts[x[1]]])
+                    elif key == "PAB":
+                        PAB.append([ts[x[0]],ts[x[1]]])
+                    elif key == "RBB":
+                        RBB.append([ts[x[0]],ts[x[1]]])
+                    elif key == "LBB":
+                        LBB.append([ts[x[0]],ts[x[1]]])
+                    elif key == "APC":
+                        APC.append([ts[x[0]],ts[x[1]]])
+                    elif key == "VEB":
+                        VEB.append([ts[x[0]],ts[x[1]]])
+        result = {
+            "APC": APC, 
+            "LBB": LBB, 
+            "PAB": PAB, 
+            "PVC": PVC, 
+            "RBB": RBB, 
+            "VEB": VEB
+            }
+
+        #get value ts by rpeaks index
+        rpeaks = hasil["rpeaks"]
+        rpeaks = np.array(rpeaks)
+        ts_tmp = np.array(ts)
+        rpeaks = ts_tmp[rpeaks]
+        rpeaks = rpeaks.tolist()
+
+        hr = hasil["heart_rate"]
+        hr_template = hasil["hr_template"]
 
         tmp = {
             "status":"OK",
             "result":{
                 "nama":nama,
                 "umur":umur,
-                "len":lenData,
-                "data":ecg,
-                "hasil":hasil
+                "data":ecg_ts,
+                "hasil":result,
+                "filtered":filtered_ts,
+                "hr_template":hr_template,
+                "rpeaks": rpeaks,
+                "hr":hr
             }
         }
 
