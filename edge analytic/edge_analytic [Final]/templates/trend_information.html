@@ -1,0 +1,46 @@
+{% for activity, detail in cookies["trend"]["detail"].items() %}
+    <hr>
+    <div class="page-header">
+        <h4 class="text-center">{{activity|capitalize}} Trend</h4>
+    </div>
+    <!-- if data could be found in trend -->
+    {% if "No data" not in detail %}
+        <div class="col-md-12">
+            <!-- if not track trend, display it's trend graph -->
+            {% if cookies["trend"]["type"] != "track" %}
+                <div class="col-md-7">
+                    <label for="trend_presentation">Presentation</label>
+                    <object id="trend_presentation" width="100%" data="{{url_for('static', filename = cookies['trend']['filename'][activity]) + '?date=' + cookies['trend']['access_time']}}"></object>
+                </div>
+            {% endif %}
+            <div class={{cookies["trend"]["html_format"]["div"]["outer"]}}>
+                <div class={{cookies["trend"]["html_format"]["div"]["inner1"]}}>
+                    <label for="trend_illustration">Illustration</label>
+                    <pre id="trend_illustration" class="text-center">| ------- | ------- |<br>{{cookies["trend"]["html_format"]["illustration"][activity]["line"]}}<br>{{cookies["trend"]["html_format"]["illustration"][activity]["info"]}}</pre>
+                </div>
+                <div class={{cookies["trend"]["html_format"]["div"]["inner2"]}}>
+                    <label for="trend_detail">Detail</label>
+                    <p id="trend_detail">
+                        Average trends for your heart rate is {{detail["average"]}} beats/minute.
+                        Normal heart rate for {{activity}} activity in age {{user["profile"]["age"]}} year(s)
+                        should between {{user["divider_range"][activity]["low"]}} beats/minute and {{user["divider_range"][activity]["high"]}} beats/minute.
+                        <br>
+                        As conclusion, your heart rate is <b><font color={{detail["color"]}}>{{detail["condition"]}}</font></b>,
+                        because your heart rate is <font color={{detail["color"]}}>{{detail["reason"]}}</font> normal heart rate range.
+                        <br>
+                        <!-- if not healthy, present summary link -->
+                        {% if detail["status"] != "normal" %}
+                            <a target="_blank" href="/article_summary/{{detail['status']}}">This</a>
+                        {% endif %}
+                        {{detail["solution"]}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+    <!-- no data alert -->
+        <div class="alert alert-warning" role="alert">
+            <strong>Warning!</strong> {{detail}}
+        </div>
+    {% endif %}
+{% endfor %}

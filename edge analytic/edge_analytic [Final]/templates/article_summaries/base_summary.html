@@ -1,0 +1,21 @@
+<h3>Summary of {% block status %}{% endblock %} heart rate ({% block term %}{% endblock %}) article</h3>
+<p>
+    This term ({{ self.term() }}) is a medical term of {{ self.status() }} heart rate.
+    Based on data analysis, your heart rate is conditioned as {{ self.status() }} heart rate.
+    In {{ self.term() }} condition, you can be <font color='green'>healthy</font> or <font color='red'>not healthy</font>.
+    Why? There's a lot of factor, but we must exclude some factors, because this analysis is based on heart rate condition.
+</p>
+<h4>- not healthy {{ self.term() }}</h4>
+<p>
+    People can be <font color='red'>not healthy</font>, because it affect their body.
+    There's some symptoms that can make people <font color='red'>not healthy</font>, such as <u>{% block not_healthy %}{% endblock %}</u>.
+    You need ask specialist and take some treatment to take care about this.
+</p>
+<h4>- healthy {{ self.term() }}</h4>
+<p>
+    Sometimes, people can <font color='green'>healthy</font> in this condition.
+    {% block healthy %}{% endblock %}
+</p>
+<hr>
+<h4>Reference:</h4>
+Please read <a target='_blank' href="{% block reference %}{% endblock %}">this</a> actual article for better understanding.

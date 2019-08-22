@@ -1,0 +1,41 @@
+<hr>
+<!-- user information -->
+<div class="col-md-12 above-hr">
+    <div class="col-md-6">
+        <label for="user_table">Information</label>
+        <table id="user_table" class="table">
+            <tr>
+                <th>Username</th><td>:</td>
+                <td>{{user["profile"]["username"]}}</td>
+            </tr>
+            <tr>
+                <th>Age</th><td>:</td>
+                <td>{{user["profile"]["age"]}}</td>
+            </tr>
+            <tr>
+                <th>Device</th><td>:</td>
+                <td>{{user["profile"]["device"]}}</td>
+            </tr>
+            <tr>
+                <th>Time</th><td>:</td>
+                <td>{{cookies["trend"]["time_range"]}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <label for="divider_table">Healthy Status</label>
+        <table id="divider_table" class="table">
+            <tr>
+                <th>Normal Heart Rate</th><th>Minimum</th><th>Maximum</th>
+            </tr>
+            {% for activity, divider in user["divider_range"].items() %}
+                <tr>
+                    <th>{{activity|capitalize}}</th>
+                    <td>{{divider["low"]}}</td>
+                    <td>{{divider["high"]}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        This rules collected from <a href="https://myheart.net/articles/what-is-a-normal-heart-rate/">here</a>.
+    </div>
+</div>

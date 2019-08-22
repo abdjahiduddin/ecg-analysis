@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block alert %}
+    {% if cookies["logout"] %}
+        <div class="alert alert-info fade in">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Info!</strong> Logged Out.
+        </div>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <div class="col-md-12 main-content all-10px-padding">
+        <div class="col-md-3 main-content all-10px-padding">
+            <table>
+                <tr><th><b>Menu</b></th></tr>
+                <tr><td>
+                    > <a class="link" href="/login">Login</a>
+                </td></tr>
+                <tr><td>
+                    > <a class="link" href="/register">Register</a>
+                </td></tr>
+            </table>
+        </div>
+        <div class="col-md-4 content all-10px-padding">
+            <img id="default-image" src="{{url_for('static', filename = 'images/analytic.png')}}">
+        </div>
+        <div class="col-md-5 content all-10px-padding">
+            <strong>Description</strong>
+            <p>
+                In Internet of Things, there’s a component called data analytic.
+                Data analytic is an application to conclude a conclusion about sensor data.
+                The data is focus on heart rate.
+                With this application, user can look for their heart rate data as time-series trend, trend by time.
+                There’s a graph visualization, condition illustration, and detailed conclusion about your heart rate trend.
+            </p>
+        </div>
+        <div class="col-md-3 content all-10px-padding">
+            <strong>Developer</strong>
+            <p>
+                Agus Adyandana
+                <br>
+                155150200111179
+            </p>
+            <strong>Contact Support</strong>
+            <p>
+                aadyandana@gmail.com
+            </p>
+        </div>
+    </div>
+{% endblock %}

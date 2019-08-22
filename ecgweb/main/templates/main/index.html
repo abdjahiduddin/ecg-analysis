@@ -151,12 +151,15 @@
                           <td>{{ i.nama }}</td>
                           <td>{{ i.umur }}</td>
                           <th>
-                            <a href="http://127.0.0.1:8000/analytic/{{ i.nama }}" class="btn btn-primary btn-icon-split btn-sm">
-                              <span class="icon">
-                                <i class="fas fa-arrow-right"></i>
-                              </span>
-                              <span class="text">Classify</span>
-                            </a>
+                            <form action="analytic/{{ i.nama }}" method="GET">
+                              <button type="submit" class="btn btn-primary btn-icon-split btn-sm">
+                                <span class="icon">
+                                  <i class="fas fa-arrow-right"></i>
+                                </span>
+                                <span class="text">Classify</span>
+                              </button>
+                            </form>
+
                           </th>
                         </tr>
                         {% endfor %}

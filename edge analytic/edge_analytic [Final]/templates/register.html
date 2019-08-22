@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+    <a href="/">< Back</a>
+    <div class="col-md-12">
+        <h3>Register</h3>
+        <form action="/register/process" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input class="form-control" type="text" id="name" name="name" required value="{{cookies['prev_form']['name']}}">
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input class="form-control" type="number" id="age" name="age" required value="{{cookies['prev_form']['age']}}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input class="form-control" type="email" id="email" name="email" required  value="{{cookies['prev_form']['email']}}">
+            </div>
+            {% if cookies['error']["email"] %}
+                <div class="alert alert-warning" role="alert">
+                    email address already used
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="device">Device:</label>
+                <input class="form-control" type="text" id="device" name="device" required  value="{{cookies['prev_form']['device']}}">
+            </div>
+            <div class="form-group">
+                <label for="token_key">Token Key:</label>
+                <input class="form-control" type="text" id="token_key" name="token_key" required  value="{{cookies['prev_form']['token_key']}}">
+            </div>
+            <div class="form-group">
+                <label for="secret_key">Secret Key:</label>
+                <input class="form-control" type="text" id="secret_key" name="secret_key" required  value="{{cookies['prev_form']['secret_key']}}">
+            </div>
+            <div class="form-group">
+                <label for="topic">Topic:</label>
+                <input class="form-control" type="text" id="topic" name="topic" required  value="{{cookies['prev_form']['topic']}}">
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input class="form-control" type="text" id="username" name="username" required value="{{cookies['prev_form']['username']}}">
+            </div>
+            {% if cookies['error']["username"] %}
+                <div class="alert alert-warning" role="alert">
+                    username already used
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input class="form-control" type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="password_confirmation">Password Confirmation:</label>
+                <input class="form-control" type="password" id="password_confirmation" name="password_confirmation" required>
+            </div>
+            {% if cookies['error']["password_match"] %}
+                <div class="alert alert-warning" role="alert">
+                    password and password confirmation didn't match
+                </div>
+            {% endif %}
+            <p><font color="red">Please verify your input at least twice for device, token key, secret key, and topic</font></p>
+            <button class="btn btn-default" type="submit">Register</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+arsitektur Database:
+
+- db admin 
+punya 3 collections yaitu authUser, topics, sama date+namaTopik (ex: date reza kalo nama topiknya reza)
+--collections authUser : isinya data regist awal + jwt token
+
+
+- db user (kalo nama usernya yani, nama db nya yani)
+isi databasenya disimpan berdasarkan topik.
+isi data dari client disimpan di collection tersebut
+

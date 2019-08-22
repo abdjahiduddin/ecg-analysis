@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+    <a href="/home">< Back</a>
+    <div class="col-md-12">
+        <h3>Edit Profile</h3>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input class="form-control" type="text" id="username" name="username" required readonly value="{{user['profile']['username']}}">
+        </div>
+        <form action="/edit_profile/process" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input class="form-control" type="text" id="name" name="name" required value="{{cookies['prev_form']['name']}}">
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input class="form-control" type="number" id="age" name="age" required value="{{cookies['prev_form']['age']}}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input class="form-control" type="email" id="email" name="email" required value="{{cookies['prev_form']['email']}}">
+            </div>
+            {% if cookies['error'] %}
+                <div class="alert alert-warning" role="alert">
+                    email address already used
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="device">Device:</label>
+                <input class="form-control" type="text" id="device" name="device" required value="{{cookies['prev_form']['device']}}">
+            </div>
+            <div class="form-group">
+                <label for="device">Token Key:</label>
+                <input class="form-control" type="text" id="token_key" name="token_key" required  value="{{cookies['prev_form']['token_key']}}">
+            </div>
+            <div class="form-group">
+                <label for="device">Secret Key:</label>
+                <input class="form-control" type="text" id="secret_key" name="secret_key" required  value="{{cookies['prev_form']['secret_key']}}">
+            </div>
+            <div class="form-group">
+                <label for="topic">Topic:</label>
+                <input class="form-control" type="text" id="topic" name="topic" required  value="{{cookies['prev_form']['topic']}}">
+            </div>
+            <p><font color="red">Please verify your input at least twice for device, token key, secret key, and topic</font></p>
+            <button class="btn btn-default" type="submit">Update Profile</button>
+        </form>
+    </div>
+{% endblock %}

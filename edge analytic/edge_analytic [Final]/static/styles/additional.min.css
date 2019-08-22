@@ -1,0 +1,32 @@
+footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+hr {
+    border: 0;
+    clear: both;
+    display: block;
+    width: 100%;
+    background-color:black;
+    height: 1px;
+}
+.above-hr {
+    margin-bottom: 15px;
+}
+/****************
+ * default.html *
+ ****************/
+.all-10px-padding {
+    padding: 10px 10px 10px 10px;
+}
+.main-content {
+    border-style: outset;
+}
+.link {
+    color: black;
+    text-decoration: none;
+}
+#default-image {
+    height: 100%;
+    width: 100%;
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+    <title>Trend Application</title>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'styles/compiled.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'styles/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'styles/datatable.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'styles/additional.min.css')}}">
+    <script src="{{url_for('static', filename = 'jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename = 'bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename = 'datatable.min.js')}}"></script>
+    <script src="{{url_for('static', filename = 'additional.min.js')}}"></script>
+</head>
+<body>
+    {% block alert %}{% endblock %}
+    <div class="container">
+        <div class="page-header">
+            <h1 class="text-center">Data Analytic Application</h1>
+        </div>
+        {% block content %}{% endblock %}
+        {% include "monitor.html" %}
+    </div>
+</body>
+</html>

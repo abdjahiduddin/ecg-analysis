@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block alert %}
+    {% if cookies["register"] %}
+        <div class="alert alert-success fade in">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> User Registered.
+        </div>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <a href="/">< Back</a>
+    <div class="col-md-12">
+        <h3>Login</h3>
+        <form action="/login/process" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input class="form-control" type="text" id="username" name="username" required value="{{cookies['username']}}">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input class="form-control" type="password" id="password" name="password" required>
+            </div>
+            {% if cookies['error'] %}
+                <div class="alert alert-warning" role="alert">
+                    please try again! username or password is incorrect
+                </div>
+            {% endif %}
+            <button class="btn btn-default" type="submit">Login</button>
+        </form>
+    </div>
+{% endblock %}

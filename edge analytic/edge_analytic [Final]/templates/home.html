@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block alert %}
+    {% if cookies["login"] %}
+        <div class="alert alert-info fade in">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Info!</strong> Logged In.
+        </div>
+    {% endif %}
+    {% if cookies["edit_profile"] %}
+        <div class="alert alert-success fade in">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Profile Edited.
+        </div>
+    {% endif %}
+    {% if cookies["change_password"] %}
+        <div class="alert alert-success fade in">
+            <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Success!</strong> Password Changed.
+        </div>
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <div class="col-md-12 above-hr">
+        <div class="col-md-11">
+            <label>Logged in as {{user["profile"]["name"]}}</label>
+        </div>
+        <div class="col-md-1">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Menu</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/edit_profile">Edit Profile</a>
+                    </li>
+                    <li>
+                        <a href="/change_password">Change Password</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <form action="/logout/process" method="POST">
+                            <button class="btn btn-default" type="submit">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <!-- trend form -->
+    <div class="col-md-12 above-hr">
+        <form id="form" action="/trend/process" method="POST">
+            <div class="form-group">
+                <label for="radio">Trend Type:</label>
+                <div id="radio">
+                    <div class="radio-inline">
+                        <label><input type="radio" name="type" value="track" onclick="change_status(true)" checked required>Track</label>
+                    </div>
+                    <div class="radio-inline">
+                        <label><input type="radio" name="type" value="daily" onclick="change_status(false)">Daily</label>
+                    </div>
+                    <div class="radio-inline">
+                        <label><input type="radio" name="type" value="monthly" onclick="change_status(false)">Monthly</label>
+                    </div>
+                    <div class="radio-inline">
+                        <label><input type="radio" name="type" value="yearly" onclick="change_status(false)">Yearly</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input class="form-control" style="height: 50px;" type="date" id="date" name="date" min={{user["time"]["created"]}} max={{user["time"]["now"]}} required disabled>
+            </div>
+            <button class="btn btn-default" type="submit">Show Trend</button>
+        </form>
+    </div>
+    <!-- if already submit trend form -->
+    {% if "trend" in cookies %}
+        {% include "user_information.html" %}
+        {% include "trend_information.html" %}
+    {% endif %}
+{% endblock %}
